@@ -12,7 +12,6 @@ interface ChatMessageProps {
 }
 
 export function ChatMessage({ content, type, timestamp }: ChatMessageProps) {
-  // Format the timestamp to HH:MM
   const formattedTime = timestamp.toLocaleTimeString([], { 
     hour: '2-digit', 
     minute: '2-digit'
@@ -20,28 +19,26 @@ export function ChatMessage({ content, type, timestamp }: ChatMessageProps) {
   
   return (
     <div className={cn(
-      "flex items-start gap-3 py-4",
+      "flex items-start gap-3 py-4 px-4",
       type === "user" && "justify-end",
       type === "system" && "justify-center"
     )}>
-      {/* Show avatar only for bot messages */}
       {type === "bot" && (
         <Avatar className="h-8 w-8">
           <AvatarImage src="/assistant.png" alt="Assistant" />
-          <AvatarFallback className="bg-primary text-white">CB</AvatarFallback>
+          <AvatarFallback className="bg-indigo-500/20 text-indigo-400">CB</AvatarFallback>
         </Avatar>
       )}
 
       <div className={cn(
-        "group flex flex-col",
+        "group flex flex-col max-w-[80%] lg:max-w-[70%]",
         type === "user" && "items-end"
       )}>
-        {/* Message content */}
         <div className={cn(
-          "rounded-lg px-4 py-3 max-w-[85%]",
-          type === "bot" && "bg-muted text-left",
-          type === "user" && "bg-primary text-primary-foreground",
-          type === "system" && "bg-secondary text-secondary-foreground text-sm"
+          "rounded-2xl px-4 py-3 shadow-lg transition-colors",
+          type === "bot" && "bg-zinc-800/50 text-zinc-100",
+          type === "user" && "bg-indigo-500/20 text-indigo-100",
+          type === "system" && "bg-zinc-800/30 text-zinc-300 text-sm"
         )}>
           {content.split('\n').map((line, i) => (
             <React.Fragment key={i}>
@@ -51,16 +48,14 @@ export function ChatMessage({ content, type, timestamp }: ChatMessageProps) {
           ))}
         </div>
         
-        {/* Timestamp */}
-        <span className="text-xs text-muted-foreground mt-1">
+        <span className="text-xs text-zinc-500 mt-1 px-1">
           {formattedTime}
         </span>
       </div>
       
-      {/* Show avatar only for user messages */}
       {type === "user" && (
         <Avatar className="h-8 w-8">
-          <AvatarFallback className="bg-secondary text-secondary-foreground">
+          <AvatarFallback className="bg-zinc-700/50 text-zinc-300">
             You
           </AvatarFallback>
         </Avatar>
