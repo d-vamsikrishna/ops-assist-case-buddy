@@ -4,6 +4,7 @@ export interface KnowledgeBaseEntry {
   id: string;
   keywords: string[];
   title: string;
+  generalApproach: string[];
   osSpecific: boolean;
   resolutions: {
     default?: string[];
@@ -11,115 +12,116 @@ export interface KnowledgeBaseEntry {
     linux?: string[];
     mac?: string[];
   };
+  followUpQuestions?: {
+    questions: string[];
+    answers: {
+      [key: string]: string[];
+    };
+  };
 }
 
 export const knowledgeBase: KnowledgeBaseEntry[] = [
   {
     id: "kb-001",
-    keywords: ["password", "reset", "forgot", "change", "login", "credential"],
-    title: "Password Reset",
-    osSpecific: false,
+    keywords: ["cpu", "processor", "high cpu", "cpu usage", "cpu utilization"],
+    title: "High CPU Usage",
+    generalApproach: [
+      "Before diving into OS-specific steps, here's a general approach:",
+      "1. Identify which process is consuming high CPU",
+      "2. Check if this is a regular pattern or a sudden spike",
+      "3. Verify if any recent changes were made to the system",
+      "4. Document the time and impact of high CPU usage"
+    ],
+    osSpecific: true,
     resolutions: {
-      default: [
-        "1. Navigate to the user management console",
-        "2. Search for the affected user",
-        "3. Select 'Reset Password' option",
-        "4. Generate a temporary password",
-        "5. Communicate the new password to the user through secure channel",
-        "6. Ask user to change the temporary password on first login"
+      windows: [
+        "1. Open Task Manager (Ctrl + Shift + Esc)",
+        "2. Go to 'Performance' tab to check overall CPU usage",
+        "3. Switch to 'Processes' tab and sort by CPU usage",
+        "4. Right-click on high CPU process and select 'Analyze wait chain'",
+        "5. If malicious, end task and scan system",
+        "6. Check Windows Event Viewer for related errors"
+      ],
+      linux: [
+        "1. Run 'top' or 'htop' command to view processes",
+        "2. Use 'ps aux | sort -nrk 3,3 | head -n 5' to see top CPU consumers",
+        "3. Check system load with 'uptime'",
+        "4. Analyze process details with 'strace -p <PID>'",
+        "5. Review system logs in /var/log/syslog",
+        "6. Consider using 'nice' command to adjust process priority"
+      ],
+      mac: [
+        "1. Open Activity Monitor",
+        "2. Select CPU tab to view processor usage",
+        "3. Sort by %CPU to identify high-usage processes",
+        "4. Use 'Sample Process' for detailed analysis",
+        "5. Check Console app for related system logs",
+        "6. Force quit problematic applications if necessary"
       ]
+    },
+    followUpQuestions: {
+      questions: [
+        "Is CPU continuously high?",
+        "Is this case logging continuously?"
+      ],
+      answers: {
+        "Is CPU continuously high?": [
+          "For continuously high CPU usage:",
+          "1. Check for memory leaks in applications",
+          "2. Review scheduled tasks and background processes",
+          "3. Update system and application patches",
+          "4. Consider resource allocation changes",
+          "5. Monitor thermal conditions of the server",
+          "6. Open a ticket with vendor support if persistent"
+        ],
+        "Is this case logging continuously?": [
+          "For continuous case logging:",
+          "1. Check log rotation settings",
+          "2. Review application logging levels",
+          "3. Analyze log patterns for recurring issues",
+          "4. Implement log aggregation solution",
+          "5. Consider adjusting log verbosity",
+          "6. Set up log monitoring alerts"
+        ]
+      }
     }
   },
   {
     id: "kb-002",
-    keywords: ["network", "connection", "internet", "connectivity", "offline", "down"],
-    title: "Network Connectivity Issues",
+    keywords: ["memory", "ram", "memory usage", "high memory", "memory utilization"],
+    title: "High Memory Usage",
+    generalApproach: [
+      "Before checking OS-specific steps, here's a general approach:",
+      "1. Identify the memory consumption pattern",
+      "2. Check for memory leaks in applications",
+      "3. Verify available physical and virtual memory",
+      "4. Document any recent changes that might affect memory usage"
+    ],
     osSpecific: true,
     resolutions: {
       windows: [
-        "1. Run command 'ipconfig /release'",
-        "2. Run command 'ipconfig /renew'",
-        "3. Run command 'ipconfig /flushdns'",
-        "4. Restart the network adapter",
-        "5. Check firewall settings",
-        "6. Verify proxy configuration"
+        "1. Open Task Manager (Ctrl + Shift + Esc)",
+        "2. Go to 'Performance' tab to check memory stats",
+        "3. View 'Processes' tab and sort by memory usage",
+        "4. Check for memory dumps in Event Viewer",
+        "5. Run Windows Memory Diagnostic tool",
+        "6. Adjust virtual memory if needed"
       ],
       linux: [
-        "1. Run command 'sudo ifdown eth0 && sudo ifup eth0'",
-        "2. Run command 'sudo systemctl restart NetworkManager'",
-        "3. Check /etc/resolv.conf for proper DNS configuration",
-        "4. Verify iptables rules using 'sudo iptables -L'",
-        "5. Check network interface configuration in /etc/network/interfaces"
+        "1. Use 'free -m' to check memory usage",
+        "2. Run 'vmstat' for virtual memory statistics",
+        "3. Check 'top' or 'htop' for process memory usage",
+        "4. Analyze swap usage with 'swapon -s'",
+        "5. Review '/proc/meminfo' for detailed memory info",
+        "6. Consider OOM killer logs in syslog"
       ],
       mac: [
-        "1. Open Network Preferences",
-        "2. Select the active network interface and click Advanced",
-        "3. Go to TCP/IP tab and click 'Renew DHCP Lease'",
-        "4. Flush DNS with 'sudo killall -HUP mDNSResponder'",
-        "5. Reset network settings if problem persists"
-      ]
-    }
-  },
-  {
-    id: "kb-003",
-    keywords: ["disk", "storage", "space", "full", "capacity"],
-    title: "Disk Space Issues",
-    osSpecific: true,
-    resolutions: {
-      windows: [
-        "1. Run Disk Cleanup utility",
-        "2. Delete temporary files using '%temp%' in Run dialog",
-        "3. Check large files using WinDirStat tool",
-        "4. Clear system restore points if necessary",
-        "5. Remove unused applications"
-      ],
-      linux: [
-        "1. Check disk usage with 'df -h'",
-        "2. Find large files using 'sudo find / -type f -size +100M'",
-        "3. Clear apt cache with 'sudo apt-get clean'",
-        "4. Remove old log files in /var/log",
-        "5. Use 'ncdu' tool for interactive disk usage analysis"
-      ],
-      mac: [
-        "1. Empty Trash",
-        "2. Clear caches from ~/Library/Caches",
-        "3. Use OmniDiskSweeper to identify large files",
-        "4. Remove unused applications",
-        "5. Delete old iOS device backups in iTunes"
-      ]
-    }
-  },
-  {
-    id: "kb-004",
-    keywords: ["server", "reboot", "restart", "crash", "hang", "frozen"],
-    title: "Server Reboot Procedure",
-    osSpecific: false,
-    resolutions: {
-      default: [
-        "1. Attempt soft reboot first using system commands",
-        "2. If unresponsive, check server through iLO/DRAC/BMC interface",
-        "3. Perform hardware health check before reboot",
-        "4. Schedule maintenance window if during business hours",
-        "5. Document current issue before reboot",
-        "6. Perform controlled shutdown if possible",
-        "7. Monitor server during startup for any errors"
-      ]
-    }
-  },
-  {
-    id: "kb-005",
-    keywords: ["backup", "restore", "recovery", "data", "lost"],
-    title: "Data Backup and Restore",
-    osSpecific: false,
-    resolutions: {
-      default: [
-        "1. Identify which backup contains the required data",
-        "2. Mount the backup storage or access the backup service",
-        "3. Locate the specific backup point needed",
-        "4. Restore to a temporary location to prevent overwriting existing data",
-        "5. Verify data integrity after restore",
-        "6. Transfer confirmed data to the required location",
-        "7. Update documentation with restore details"
+        "1. Open Activity Monitor",
+        "2. Select Memory tab",
+        "3. Check Memory Pressure graph",
+        "4. Review 'Real Mem' usage per process",
+        "5. Analyze swap usage",
+        "6. Use 'purge' command if needed to clear inactive memory"
       ]
     }
   }
