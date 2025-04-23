@@ -7,6 +7,7 @@ import { SimilarCasesDisplay } from "@/components/SimilarCasesDisplay";
 import { findKnowledgeBaseMatches, findSimilarCases } from "@/utils/similarity";
 import { knowledgeBase, KnowledgeBaseEntry } from "@/data/knowledgeBase";
 import { previousCases, PreviousCase } from "@/data/previousCases";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Message {
   id: string;
@@ -220,46 +221,70 @@ export function ChatInterface() {
   return (
     <div className="flex flex-col h-[calc(100vh-2rem)] max-w-4xl w-full mx-auto">
       <div className="flex-1 flex flex-col overflow-hidden">
-        <SimilarCasesDisplay 
-          similarCases={similarCases} 
-          isVisible={showSimilarCases}
-        />
+        <AnimatePresence>
+          <SimilarCasesDisplay 
+            similarCases={similarCases} 
+            isVisible={showSimilarCases}
+          />
+        </AnimatePresence>
         
-        <ScrollArea ref={scrollAreaRef} className="flex-1 pr-4">
-          <div className="py-4 space-y-2">
+        <ScrollArea className="flex-1 pr-4">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            className="py-4 space-y-3"
+          >
             {messages.map(message => (
-              <ChatMessage
+              <motion.div
                 key={message.id}
-                content={message.content}
-                type={message.type}
-                timestamp={message.timestamp}
-              />
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                <ChatMessage
+                  content={message.content}
+                  type={message.type}
+                  timestamp={message.timestamp}
+                />
+              </motion.div>
             ))}
             
             {showFollowUpQuestions && currentKBEntry?.followUpQuestions && (
-              <div className="flex flex-col gap-2 mt-4">
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+                className="flex flex-col gap-2 mt-4"
+              >
                 {currentKBEntry.followUpQuestions.questions.map(question => (
                   <button
                     key={question}
                     onClick={() => handleFollowUpQuestion(question)}
-                    className="text-left px-4 py-2 rounded bg-secondary hover:bg-secondary/80 transition-colors"
+                    className="text-left px-4 py-2 rounded-lg bg-secondary/10 hover:bg-secondary/20 transition-colors border border-secondary/20 text-secondary-foreground"
                   >
                     {question}
                   </button>
                 ))}
-              </div>
+              </motion.div>
             )}
-          </div>
+          </motion.div>
         </ScrollArea>
         
         {waitingForOS.waiting && (
-          <OSSelector 
-            onSelect={handleOSSelect} 
-            onCancel={handleOSCancel}
-          />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <OSSelector 
+              onSelect={handleOSSelect} 
+              onCancel={handleOSCancel}
+            />
+          </motion.div>
         )}
         
-        <div className="pt-4">
+        <div className="pt-4 border-t border-border/50">
           <ChatInput 
             onSendMessage={handleSendMessage} 
             disabled={waitingForOS.waiting}
