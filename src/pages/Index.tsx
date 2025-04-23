@@ -1,12 +1,31 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { ChatInterface } from "@/components/ChatInterface";
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-gray-600">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen flex flex-col bg-background">
+      <header className="border-b py-4">
+        <div className="container">
+          <div className="flex items-center justify-between">
+            <h1 className="text-2xl font-bold">OpsAssist: Case Buddy</h1>
+            <p className="text-muted-foreground">
+              Infrastructure & Cloud Services Support
+            </p>
+          </div>
+        </div>
+      </header>
+      
+      <main className="flex-1 container py-6">
+        <ChatInterface />
+      </main>
+      
+      <footer className="border-t py-4">
+        <div className="container">
+          <div className="text-sm text-muted-foreground text-center">
+            Built for Keyloop Infrastructure & Cloud Services Team
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
